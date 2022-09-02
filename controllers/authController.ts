@@ -2,9 +2,14 @@ import { Request, Response } from "express";
 import connection from '../dbStrategy/pg.js';
 export async function teste(req:Request, res:Response) {
     const { authorization } = req.headers;
-    const token = authorization?.replace('Bearer ', '');
+    const token:string = authorization?.replace('Bearer ', '');
+    const nome =req.body
     try {
-        const a =await connection.query('select * from businesses')
+        console.log(nome)
+        const a =await connection.query('select "apiKey" from companies where "apiKey" =$1',[token])
+        if(a.rows.length===0){
+            return res.status(401).send('key incorreta')
+        }
         console.log(a.rows)
         res.status(201).send('Usuário cadastrado com sucesso!');
     } catch (error) {
