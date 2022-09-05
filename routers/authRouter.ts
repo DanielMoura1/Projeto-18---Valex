@@ -1,11 +1,11 @@
 
 import { Router } from "express";
-import { teste ,ativacaoCartao, cartaoVisualizacao,cartaoBloquear,cartaoDesBloquear,recargas, compras} from "../controllers/authController.js";
+import { cardCreate ,ativacaoCartao, cartaoVisualizacao,cartaoBloquear,cartaoDesBloquear,recargas, compras} from "../controllers/authController.js";
 import validateSchema from "../middlewares/validateSchema"
 import cardSchema from "../schemas/schemaCard"
 const authRouter = Router();
 
-authRouter.post('/teste', teste);
+authRouter.post('/cardCreate',cardCreate);
 authRouter.put('/ativacaoCartao', ativacaoCartao);
 authRouter.get('/cartaoVisualizacao', cartaoVisualizacao);
 authRouter.put('/cartaoBloquear', cartaoBloquear);

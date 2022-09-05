@@ -51,11 +51,7 @@ if(companie.length===0){
  const fullname =employee.rows[0].fullName.split(" ")
  const namec =fullname[0]+' '+fullname[(fullname[1].length >= 3 ? 1 : 2)][0]+' '+fullname[fullname.length-1]
  console.log(namec.toUpperCase())
- const a ={
-    expirationDate:DataDeValidade,
-    cardholderName:namec.toUpperCase()
-    }
- return a
+ 
  //
  console.log('oi11')
  const resposta ={
