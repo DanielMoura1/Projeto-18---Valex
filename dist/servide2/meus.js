@@ -41,6 +41,7 @@ export function desbloquear(card) {
     return __awaiter(this, void 0, void 0, function () {
         return __generator(this, function (_a) {
             if (card.rows[0].isBlocked === false) {
+                //return res.status(401).send('cartao nao está bloqueado')
                 throw { code: 'NotFound', message: 'cartao nao está bloqueado' };
             }
             return [2 /*return*/];
@@ -51,6 +52,7 @@ export function bloquear(card) {
     return __awaiter(this, void 0, void 0, function () {
         return __generator(this, function (_a) {
             if (card.rows[0].isBlocked === true) {
+                //return res.status(401).send('cartao ja está bloqueado')
                 throw { code: 'NotFound', message: 'cartao está bloqueado' };
             }
             return [2 /*return*/];
@@ -68,6 +70,7 @@ export function SomenteEmpregadosCadastrado(body) {
                     console.log('oi6');
                     if (employee.rows.length === 0) {
                         throw { code: 'NotFound', message: 'voce nao existe' };
+                        //return res.status(401).send('voce nao existe')
                     }
                     return [2 /*return*/, employee];
             }
@@ -83,6 +86,7 @@ export function SomenteCartaoCadastrado(body) {
                 case 1:
                     card = _a.sent();
                     if (card.rows.length === 0) {
+                        //return res.status(401).send('cartao nao existe')
                         throw { code: 'NotFound', message: 'cartao nao existe' };
                     }
                     return [2 /*return*/, card];
@@ -94,6 +98,7 @@ export function SomenteCartaoAtivo(card) {
     return __awaiter(this, void 0, void 0, function () {
         return __generator(this, function (_a) {
             if (card.rows[0].password != null) {
+                //return res.status(401).send('cartao ja ativado')
                 throw { code: 'NotFound', message: 'cartao ja ativado' };
             }
             return [2 /*return*/];
@@ -104,6 +109,7 @@ export function SomenteCartaoAtivo2(card) {
     return __awaiter(this, void 0, void 0, function () {
         return __generator(this, function (_a) {
             if (card.rows[0].password === null) {
+                //return res.status(401).send('cartao ja ativado')
                 throw { code: 'NotFound', message: 'cartao nao ativado' };
             }
             return [2 /*return*/];
@@ -114,6 +120,7 @@ export function verificaCVC(card, body) {
     return __awaiter(this, void 0, void 0, function () {
         return __generator(this, function (_a) {
             if (body.cvc != card.rows[0].securityCode) {
+                //return res.status(401).send('cvc invalido')
                 throw { code: 'NotFound', message: 'cvc invalido' };
             }
             return [2 /*return*/];
@@ -124,6 +131,7 @@ export function verificaSenha(card, body) {
     return __awaiter(this, void 0, void 0, function () {
         return __generator(this, function (_a) {
             if (card.rows[0].password != null) {
+                //return res.status(401).send('cartao ja ativado')
                 throw { code: 'NotFound', message: 'cartao ja ativado' };
             }
             return [2 /*return*/];
@@ -143,6 +151,7 @@ export function verificaValidade(card) {
             cardValidade = card.rows[0].expirationDate;
             console.log('_-');
             if (time[1] >= cardValidade[1] && time[0] > cardValidade[0]) {
+                //return res.status(401).send('cartao  fora da validade')
                 throw { code: 'NotFound', message: 'cartao  fora da validade' };
             }
             console.log('_-aff');
@@ -161,6 +170,7 @@ export function verificaChave(token) {
                     console.log(companie.length);
                     if (companie.length === 0) {
                         throw { code: 'NotFound', message: 'key incorreta' };
+                        //return res.status(401).send('key incorreta')
                     }
                     return [2 /*return*/, companie];
             }
@@ -172,14 +182,19 @@ export function verificaTipo(body) {
         var card;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, connection.query('select * from cards where "employeeId" =$1 AND type =$2', [body.id, body.type])];
+                case 0:
+                    console.log('?');
+                    console.log(body);
+                    return [4 /*yield*/, connection.query('select * from cards where "employeeId" =$1 AND type =$2', [body.id, body.type])];
                 case 1:
                     card = _a.sent();
+                    console.log(card);
                     console.log('oi9');
                     if (card.rows.length > 0) {
                         console.log('serio ?');
                         throw { code: 'NotFound', message: 'Não pode ter mais de um cartão do mesmo tipo' };
-                    }
+                        //return res.status(401).send('Não pode ter mais de um cartão do mesmo tipo')
+                    } //
                     return [2 /*return*/];
             }
         });
@@ -197,6 +212,7 @@ export function verificaCard(body) {
                     if (card.rows.length === 0) {
                         console.log('serio ?');
                         throw { code: 'NotFound', message: 'voce nao existe' };
+                        //return res.status(401).send('Não pode ter mais de um cartão do mesmo tipo')
                     } //
                     return [2 /*return*/, card];
             }
@@ -225,6 +241,7 @@ export function validarSenha(body, card) {
             senha = bcrypt.compareSync(body.senha, card.rows[0].password);
             if (!senha) {
                 console.log('senha invalida');
+                //return res.status(420).send('voce nao existe')
                 throw { code: 'NotFound', message: 'voce nao existe' };
             }
             return [2 /*return*/];
@@ -241,6 +258,7 @@ export function EstabelecimentosCadastrados(body) {
                     businesse = _a.sent();
                     console.log(businesse.rows[0]);
                     if (businesse.rows.length === 0) {
+                        //return res.status(401).send('loja nao existe')
                         throw { code: 'NotFound', message: 'loja nao existe' };
                     }
                     return [2 /*return*/, businesse];
@@ -252,6 +270,7 @@ export function EstabelecimentoTipo(card, businesse) {
     return __awaiter(this, void 0, void 0, function () {
         return __generator(this, function (_a) {
             if (businesse.rows[0].type != card.rows[0].type) {
+                //return res.status(401).send('tipo de cartao invalido')
                 throw { code: 'NotFound', message: 'tipo de cartao invalido' };
             }
             return [2 /*return*/];

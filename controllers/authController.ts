@@ -32,27 +32,34 @@ export async function compras(req:Request, res:Response) {
     }
     try{
       
-        const card =await meu.SomenteCartaoCadastrado(body)
-        await meu.bloquear(card)
-        await meu.verificaValidade(card)
-        await meu.SomenteCartaoAtivo2(card)
-         await meu.validarSenha(body,card)
+         const card =await meu.SomenteCartaoCadastrado(body)
        
+        await meu.bloquear(card)
+      
+           await meu.verificaValidade(card)
+      
+           await meu.SomenteCartaoAtivo2(card)
+        
+         await meu.validarSenha(body,card)
+        
         const businesse=await meu.EstabelecimentosCadastrados(body)
       
         await meu.EstabelecimentoTipo(card,businesse)
+     
+        const recharges =await repositories.recharges(body)
        
-        const recharges =await connection.query('select amount from recharges where "cardId" =$1',[body.id])
-       
-        const payments =await connection.query('select amount from payments where "cardId" =$1',[body.id])
+        const payments = await repositories.payments(body)
+        
         let recharge:number =0
         let payment:number=0
         for(let i=0;i< recharges.rows.length;i++){
             recharge = recharge+recharges.rows[i].amount
         }
+        
         for(let i=0;i< payments.rows.length;i++){
             payment = payment+payments.rows[i].amount
         }
+        
         console.log(recharge-payment)
         const soma =recharge-payment
         if(body.valor>soma){
@@ -83,8 +90,11 @@ export async function recargas(req:Request, res:Response) {
        
         const card =await meu.SomenteCartaoCadastrado(body)
         
-        await meu.SomenteCartaoAtivo2(card)
+          await meu.SomenteCartaoAtivo2(card)
+          console.log('1')
+      
         await meu.verificaValidade(card)
+        console.log('2')
         const date = new Date();
         const hoje = date.toLocaleDateString();
         const time=hoje.split("/")
@@ -94,7 +104,10 @@ export async function recargas(req:Request, res:Response) {
         if(time[1] >= cardValidade[1] && time[0] > cardValidade[0]){
             return res.status(401).send('cartao fora da validade')
         }
-        await repositories.recargas(timestamp,body)  
+        console.log('3')
+        await repositories.recargas(timestamp,body)
+        console.log('4')
+            
         res.status(201).send('Cartao atualizado com sucesso!');
     }catch(error){
         res.status(500).send(error)
@@ -104,13 +117,18 @@ export async function cartaoDesBloquear(req:Request, res:Response) {
     const body =req.body
     console.log(body)
     try{
-        await desbloquearCartao(body)
-       
+       // await desbloquearCartao(body)
+      
         const card =await meu.SomenteCartaoCadastrado(body)
-        await meu.bloquear(card)
+        
+        await meu.desbloquear(card)
+       
         await meu.verificaValidade(card)
+      
         await meu.validarSenha(body,card)
-        await connection.query('UPDATE cards SET "isBlocked"=$1  WHERE id = $2;',[false,body.id])
+       
+        await repositories.Desbloquear(body)
+       
         res.status(201).send('Cartao atualizado com sucesso!');
     }catch(error){
         res.status(500).send(error)
@@ -121,10 +139,15 @@ export async function cartaoBloquear(req:Request, res:Response) {
     const body =req.body
     console.log(body)
     try{
+ 
          const card =await meu.SomenteCartaoCadastrado(body)
+     
         await meu.bloquear(card)
+       
           await meu.verificaValidade(card)
+       
           await meu.validarSenha(body,card)
+      
         await repositories.Bloquear(body)
         res.status(201).send('Cartao atualizado com sucesso!');
     }catch(error){
@@ -135,7 +158,9 @@ export async function cartaoVisualizacao(req:Request, res:Response) {
     const body =req.body
     console.log(body)
     try{
+     
          const card =await meu.SomenteCartaoCadastrado(body)
+      
         
         console.log('oi')
         const recharges =await repositories.recharges(body)
@@ -181,16 +206,26 @@ export async function ativacaoCartao(req:Request, res:Response) {
         return res.status(422).send("oi XxxX oi");
     }
     try{
+   
+      
         const card =await meu.SomenteCartaoCadastrado(body)
+        console.log('1')
+      
         await meu.SomenteCartaoAtivo(card)
+        console.log('2')
+   
         await meu.verificaValidade(card)
+        console.log('3')
+      
        await meu.verificaCVC(card,body)
        await meu.salvarSenha(body)
+    
+      
         res.status(201).send('Cartao atualizado com sucesso!');
     }catch(error){
         res.status(500).send(error)
     }
-    
+  
 
 }
 export async function cardCreate(req:Request, res:Response) {
@@ -208,9 +243,17 @@ export async function cardCreate(req:Request, res:Response) {
         return res.status(422).send("oi XxxX oi");
     }
     try {
+      
+       
         const companie = await meu.verificaChave(token)
+        console.log('1')
+        
        const employee =await meu.SomenteEmpregadosCadastrado(body)
+       console.log('22')
+     
+     
         await meu.verificaTipo(body)
+       
         const date = new Date();
         const hoje = date.toLocaleDateString();
         const time=hoje.split("/")
@@ -230,12 +273,15 @@ export async function cardCreate(req:Request, res:Response) {
             originalCardId:null,
             isBlocked:false,
             type:body.type
+       
         }
-        console.log('5')
-        await repositories.criarCartao(resposta)   
+      
+        await repositories.criarCartao(resposta)
+      
+           
         res.status(201).send('Usuário cadastrado com sucesso!');
     } catch (error) {
-        console.log('a')
+        
         res.status(500).send(error)
     }
 }

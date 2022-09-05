@@ -26,7 +26,7 @@ export async function Bloquear(body:any) {
     await connection.query('UPDATE cards SET "isBlocked"=$1  WHERE id = $2;',[true,body.id])
         
 }
-export async function Dsedbloquear(body:any) {
+export async function Desbloquear(body:any) {
     await connection.query('UPDATE cards SET "isBlocked"=$1  WHERE id = $2;',[false,body.id])
         
 }

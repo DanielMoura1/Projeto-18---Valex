@@ -9,7 +9,7 @@ authRouter.post('/cardCreate',cardCreate);
 authRouter.put('/ativacaoCartao', ativacaoCartao);
 authRouter.get('/cartaoVisualizacao', cartaoVisualizacao);
 authRouter.put('/cartaoBloquear', cartaoBloquear);
-authRouter.put('/cartaoDesBloquear', cartaoDesBloquear);
+authRouter.put('/cartaoDesbloquear', cartaoDesBloquear);
 authRouter.post('/recargas', recargas);
 authRouter.post('/compras', compras) 
 export default authRouter;

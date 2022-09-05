@@ -34,12 +34,10 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-import connection from '../dbStrategy/pg.js';
 import joi from 'joi';
 import { faker } from '@faker-js/faker';
 import * as meu from '../servide2/meus.js';
 import * as repositories from '../repositories/meusRepos.js';
-import { desbloquearCartao } from "../service/desbloquearCartao.js";
 //const randomName = faker.name.findName(); // Willie Bahringer
 //const randomEmail = faker.internet.email(); // Tomasa_Ferry14@hotmail.com
 //var timestamp = new Date().getTime();
@@ -85,10 +83,10 @@ export function compras(req, res) {
                     return [4 /*yield*/, meu.EstabelecimentoTipo(card, businesse)];
                 case 8:
                     _a.sent();
-                    return [4 /*yield*/, connection.query('select amount from recharges where "cardId" =$1', [body.id])];
+                    return [4 /*yield*/, repositories.recharges(body)];
                 case 9:
                     recharges = _a.sent();
-                    return [4 /*yield*/, connection.query('select amount from payments where "cardId" =$1', [body.id])];
+                    return [4 /*yield*/, repositories.payments(body)];
                 case 10:
                     payments = _a.sent();
                     recharge = 0;
@@ -144,9 +142,11 @@ export function recargas(req, res) {
                     return [4 /*yield*/, meu.SomenteCartaoAtivo2(card)];
                 case 3:
                     _a.sent();
+                    console.log('1');
                     return [4 /*yield*/, meu.verificaValidade(card)];
                 case 4:
                     _a.sent();
+                    console.log('2');
                     date = new Date();
                     hoje = date.toLocaleDateString();
                     time = hoje.split("/");
@@ -156,9 +156,11 @@ export function recargas(req, res) {
                     if (time[1] >= cardValidade[1] && time[0] > cardValidade[0]) {
                         return [2 /*return*/, res.status(401).send('cartao fora da validade')];
                     }
+                    console.log('3');
                     return [4 /*yield*/, repositories.recargas(timestamp, body)];
                 case 5:
                     _a.sent();
+                    console.log('4');
                     res.status(201).send('Cartao atualizado com sucesso!');
                     return [3 /*break*/, 7];
                 case 6:
@@ -180,32 +182,29 @@ export function cartaoDesBloquear(req, res) {
                     console.log(body);
                     _a.label = 1;
                 case 1:
-                    _a.trys.push([1, 8, , 9]);
-                    return [4 /*yield*/, desbloquearCartao(body)];
-                case 2:
-                    _a.sent();
+                    _a.trys.push([1, 7, , 8]);
                     return [4 /*yield*/, meu.SomenteCartaoCadastrado(body)];
-                case 3:
+                case 2:
                     card = _a.sent();
-                    return [4 /*yield*/, meu.bloquear(card)];
-                case 4:
+                    return [4 /*yield*/, meu.desbloquear(card)];
+                case 3:
                     _a.sent();
                     return [4 /*yield*/, meu.verificaValidade(card)];
-                case 5:
+                case 4:
                     _a.sent();
                     return [4 /*yield*/, meu.validarSenha(body, card)];
+                case 5:
+                    _a.sent();
+                    return [4 /*yield*/, repositories.Desbloquear(body)];
                 case 6:
                     _a.sent();
-                    return [4 /*yield*/, connection.query('UPDATE cards SET "isBlocked"=$1  WHERE id = $2;', [false, body.id])];
-                case 7:
-                    _a.sent();
                     res.status(201).send('Cartao atualizado com sucesso!');
-                    return [3 /*break*/, 9];
-                case 8:
+                    return [3 /*break*/, 8];
+                case 7:
                     error_3 = _a.sent();
                     res.status(500).send(error_3);
-                    return [3 /*break*/, 9];
-                case 9: return [2 /*return*/];
+                    return [3 /*break*/, 8];
+                case 8: return [2 /*return*/];
             }
         });
     });
@@ -321,12 +320,15 @@ export function ativacaoCartao(req, res) {
                     return [4 /*yield*/, meu.SomenteCartaoCadastrado(body)];
                 case 2:
                     card = _a.sent();
+                    console.log('1');
                     return [4 /*yield*/, meu.SomenteCartaoAtivo(card)];
                 case 3:
                     _a.sent();
+                    console.log('2');
                     return [4 /*yield*/, meu.verificaValidade(card)];
                 case 4:
                     _a.sent();
+                    console.log('3');
                     return [4 /*yield*/, meu.verificaCVC(card, body)];
                 case 5:
                     _a.sent();
@@ -367,9 +369,11 @@ export function cardCreate(req, res) {
                     return [4 /*yield*/, meu.verificaChave(token)];
                 case 2:
                     companie = _a.sent();
+                    console.log('1');
                     return [4 /*yield*/, meu.SomenteEmpregadosCadastrado(body)];
                 case 3:
                     employee = _a.sent();
+                    console.log('22');
                     return [4 /*yield*/, meu.verificaTipo(body)];
                 case 4:
                     _a.sent();
@@ -393,7 +397,6 @@ export function cardCreate(req, res) {
                         isBlocked: false,
                         type: body.type
                     };
-                    console.log('5');
                     return [4 /*yield*/, repositories.criarCartao(resposta)];
                 case 5:
                     _a.sent();
@@ -401,7 +404,6 @@ export function cardCreate(req, res) {
                     return [3 /*break*/, 7];
                 case 6:
                     error_7 = _a.sent();
-                    console.log('a');
                     res.status(500).send(error_7);
                     return [3 /*break*/, 7];
                 case 7: return [2 /*return*/];

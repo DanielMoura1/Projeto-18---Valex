@@ -98,7 +98,7 @@ export function Bloquear(body) {
         });
     });
 }
-export function Dsedbloquear(body) {
+export function Desbloquear(body) {
     return __awaiter(this, void 0, void 0, function () {
         return __generator(this, function (_a) {
             switch (_a.label) {
